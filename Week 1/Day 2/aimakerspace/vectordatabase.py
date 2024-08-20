@@ -12,6 +12,13 @@ def cosine_similarity(vector_a: np.array, vector_b: np.array) -> float:
     norm_b = np.linalg.norm(vector_b)
     return dot_product / (norm_a * norm_b)
 
+# Added by me
+def manhattan_distance(vector_a: np.array, vector_b: np.array) -> float:
+    """Computes Manhattan Distance between two vectors."""
+    distance = np.sum(np.abs(vector_a - vector_b))
+    similarity = 1 / (1 + distance)
+    return similarity
+
 
 class VectorDatabase:
     def __init__(self, embedding_model: EmbeddingModel = None):

@@ -1,6 +1,7 @@
 import os
 from typing import List
-
+import PyPDF2  # Added by me
+ 
 
 class TextFileLoader:
     def __init__(self, path: str, encoding: str = "utf-8"):
@@ -11,16 +12,26 @@ class TextFileLoader:
     def load(self):
         if os.path.isdir(self.path):
             self.load_directory()
-        elif os.path.isfile(self.path) and self.path.endswith(".txt"):
+        elif os.path.isfile(self.path) and (self.path.endswith(".txt") or self.path.endswith(".pdf")): # Modified by me
             self.load_file()
         else:
             raise ValueError(
-                "Provided path is neither a valid directory nor a .txt file."
+                "Provided path is neither a valid directory nor a .txt/.pdf file."
             )
 
     def load_file(self):
-        with open(self.path, "r", encoding=self.encoding) as f:
-            self.documents.append(f.read())
+        # Modified by me
+        if self.path.endswith(".txt"):
+            with open(self.path, "r", encoding=self.encoding) as f:
+                self.documents.append(f.read())
+        else:
+            with open(self.path, 'rb') as f:
+                pdf_reader = PyPDF2.PdfReader(f)  
+            
+            text = ""
+            for page_num in range(len(pdf_reader.pages)):
+                page = pdf_reader.pages[page_num]
+                self.documents.append(page.extract_text())
 
     def load_directory(self):
         for root, _, files in os.walk(self.path):
@@ -51,7 +62,7 @@ class CharacterTextSplitter:
 
     def split(self, text: str) -> List[str]:
         chunks = []
-        for i in range(0, len(text), self.chunk_size - self.chunk_overlap):
+        for i in range(0, len(text), self.chunk_size - self.chunk_overlap): # by default, it is range(0, len(text), 800)  
             chunks.append(text[i : i + self.chunk_size])
         return chunks
 
