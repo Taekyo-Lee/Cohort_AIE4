@@ -54,6 +54,7 @@ def get_configurable_rag():
             documents = chunk,
             embedding = EMBEDDINGS[model_name],
             collection_name = model_name,
+            in_memory=True,
             docker_container_port = DOCKER_CONTAINER_PORT,
             if_exists = 'skip'
         )
@@ -76,26 +77,25 @@ def get_configurable_rag():
 @cl.on_chat_start
 async def on_chat_start():
 
+    msg = cl.Message(content="Building the RAG model. Please wait...")
+    await msg.send()
+
 
     retrievers, rag = get_configurable_rag()
 
 
-    msg = cl.Message(content=(
+    msg.content = (
         "Please choose one of the following models for your retriever:\n"
         "1. snowflake_recursive_finetuned\n"
         "2. snowflake_semantic_finetuned\n"
         "3. mpnet_recursive_finetuned\n"
         "4. mpnet_semantic_finetuned\n"
         "Type the number of your choice."
-    ))
-    await msg.send()
+    )
+    await msg.update()
 
 
 
-
-
-    # msg = cl.Message(content=f"You can now ask questions!")
-    # await msg.send()
 
     cl.user_session.set("retrievers", retrievers)
     cl.user_session.set("rag", rag)

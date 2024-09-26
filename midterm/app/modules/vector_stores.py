@@ -88,7 +88,7 @@ def get_qdrant_vector_store_from_documents(
         location = f"http://localhost:{docker_container_port}"
 
 
-    if collection_name in get_existing_qdrant_vector_store_collection_names(docker_container_port):
+    if not in_memory and collection_name in get_existing_qdrant_vector_store_collection_names(docker_container_port):
         if if_exists == 'skip':
             print(f"[WARGNING] Collection {collection_name} already exists. You have chosen to skip adding the documents you provided.")
 

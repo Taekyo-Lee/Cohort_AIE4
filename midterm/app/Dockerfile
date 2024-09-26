@@ -1,0 +1,15 @@
+FROM python:3.11
+
+RUN useradd -m -u 1000 user
+
+WORKDIR /app
+
+COPY . /app
+
+COPY ./requirements.txt /app/requirements.txt
+
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["chainlit", "run", "app.py", "--port", "7860"]
