@@ -27,8 +27,7 @@ from modules.rag_chains import get_configurable_rag_chain
 def get_configurable_rag():
     
     LLM = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-    DOCKER_CONTAINER_PORT = "6333"
-    MODELS = ['snowflake_recursive_finetuned', 'snowflake_semantic_finetuned', 'mpnet_recursive_finetuned', 'mpnet_semantic_finetuned']
+    MODELS = ['snowflake_recursive', 'snowflake_semantic', 'mpnet_recursive', 'mpnet_semantic']
     CHUNK_PATH = [
         os.path.join('documents/e2e_rags', 'chunks_recursive: size 1000 overlap 0.2.pkl'), 
         os.path.join('documents/e2e_rags', 'chunks_semantic: buffer 1 threshold 90-snowflake.pkl'), 
@@ -42,10 +41,10 @@ def get_configurable_rag():
 
     print("Loading embeddings...")
     EMBEDDINGS = {
-    'snowflake_recursive_finetuned' : HuggingFaceEmbeddings(model_name='finetuned_embeddings/snowflake_recursive'),
-        'snowflake_semantic_finetuned' : HuggingFaceEmbeddings(model_name='finetuned_embeddings/snowflake_semantic'),
-        'mpnet_recursive_finetuned' : HuggingFaceEmbeddings(model_name='finetuned_embeddings/mpnet_recursive'),
-        'mpnet_semantic_finetuned' : HuggingFaceEmbeddings(model_name='finetuned_embeddings/mpnet_semantic')
+    'snowflake_recursive' : HuggingFaceEmbeddings(model_name='Snowflake/snowflake-arctic-embed-m'),
+        'snowflake_semantic' : HuggingFaceEmbeddings(model_name='Snowflake/snowflake-arctic-embed-m'),
+        'mpnet_recursive' : HuggingFaceEmbeddings(model_name='all-mpnet-base-v2'),
+        'mpnet_semantic' : HuggingFaceEmbeddings(model_name='all-mpnet-base-v2')
     }
 
     print("Loading retrievers...")
@@ -55,7 +54,6 @@ def get_configurable_rag():
             embedding = EMBEDDINGS[model_name],
             collection_name = model_name,
             in_memory=True,
-            docker_container_port = DOCKER_CONTAINER_PORT,
             if_exists = 'skip'
         )
         for model_name, chunk in CHUNKS.items()
@@ -63,7 +61,7 @@ def get_configurable_rag():
 
     print("Loading configurable RAG...")
     RAG = get_configurable_rag_chain(
-        default_retriever = RETREIVERS['snowflake_recursive_finetuned'], 
+        default_retriever = RETREIVERS['snowflake_recursive'], 
         default_llm = LLM,
         default_rag_name = 'RAG'
     )
@@ -86,10 +84,10 @@ async def on_chat_start():
 
     msg.content = (
         "Please choose one of the following models for your retriever:\n"
-        "1. snowflake_recursive_finetuned\n"
-        "2. snowflake_semantic_finetuned\n"
-        "3. mpnet_recursive_finetuned\n"
-        "4. mpnet_semantic_finetuned\n"
+        "1. snowflake_recursive\n"
+        "2. snowflake_semantic\n"
+        "3. mpnet_recursive\n"
+        "4. mpnet_semantic\n"
         "Type the number of your choice."
     )
     await msg.update()
@@ -115,10 +113,10 @@ async def main(message):
     if not selected_model:
         # Map user input to model name
         model_options = {
-            "1": "snowflake_recursive_finetuned",
-            "2": "snowflake_semantic_finetuned",
-            "3": "mpnet_recursive_finetuned",
-            "4": "mpnet_semantic_finetuned"
+            "1": "snowflake_recursive",
+            "2": "snowflake_semantic",
+            "3": "mpnet_recursive",
+            "4": "mpnet_semantic"
         }
 
         # Check if the user input is valid
