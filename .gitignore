@@ -11,4 +11,4 @@ openai-python
 *finetuned_embeddings* 
 *__pycache__* 
 mlb
-
+*.pkl
