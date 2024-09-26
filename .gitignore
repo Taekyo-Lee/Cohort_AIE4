@@ -8,3 +8,7 @@ openai-python
  
 *langchain_cache* 
 *finetuned_arctic* 
+*finetuned_embeddings* 
+*__pycache__* 
+mlb
+*.pkl 
