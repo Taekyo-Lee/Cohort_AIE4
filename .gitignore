@@ -12,3 +12,5 @@ openai-python
 *__pycache__* 
 mlb
 *.pkl
+
+*dspy_cache*
