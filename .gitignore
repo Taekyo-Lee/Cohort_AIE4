@@ -10,7 +10,12 @@ openai-python
 *finetuned_arctic* 
 *finetuned_embeddings* 
 *__pycache__* 
+*cache* 
+*e2e_rag_cache* 
+*root_path* 
+*.chainlit* 
 mlb
 *.pkl
+*.pdf
 
 *dspy_cache*
