@@ -1,0 +1,14 @@
+services:
+  webapp:
+    image: aie4_mvp:latest  # The name of your Docker image
+    container_name: test  # Name of the container
+    ports:
+      - "7860:7860"  # Map port 7860 on the host to port 7860 in the container
+    volumes:
+      - vector_store_cache:/home/user/app/VECTOR_STORE_CACHE
+      - e2e_cache:/home/user/app/E2E_CACHE
+    command: chainlit run app.py --host 0.0.0.0 --port 7860
+
+volumes:
+  vector_store_cache:
+  e2e_cache:

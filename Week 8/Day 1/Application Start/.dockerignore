@@ -1,0 +1,5 @@
+__pycache__/
+.chainlit/
+E2E_CACHE/
+VECTOR_STORE_CACHE/
+.env
