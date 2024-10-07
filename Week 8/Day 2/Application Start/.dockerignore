@@ -1,0 +1,5 @@
+.env
+.git
+.chainlit
+__pycache__
+.gitattributes

@@ -1,6 +1,0 @@
-.env
-__pycache__/
-.chainlit
-*.faiss
-*.pkl
-.files
