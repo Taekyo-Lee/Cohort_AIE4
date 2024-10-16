@@ -1,4 +1,4 @@
-# my-app
+# rag_on_prem
 
 ## Installation
 
@@ -11,23 +11,25 @@ pip install -U langchain-cli
 ## Adding packages
 
 ```bash
-# adding packages from 
-# https://github.com/langchain-ai/langchain/tree/master/templates
-langchain app add $PROJECT_NAME
+# adds a predefined template or package from the official LangChain templates repository to your application. (https://github.com/langchain-ai/langchain/tree/master/templates) 
+langchain app add rag_on_prem
 
-# adding custom GitHub repo packages
-langchain app add --repo $OWNER/$REPO
-# or with whole git string (supports other git providers):
-# langchain app add git+https://github.com/hwchase17/chain-of-verification
+# adds a package from a custom GitHub repository to your LangChain application. (git+url or $OWNER/$REPO)
+langchain app add --repo git+https://github.com/Taekyo-Lee/Cohort_AIE4/tree/main/Week%209/LangServe/my-app
 
-# with a custom api mount point (defaults to `/{package_name}`)
-langchain app add $PROJECT_NAME --api_path=/my/custom/path/rag
+# (Optional) adds a package to your LangChain app but allows you to define a custom API path where this package will be accessible. (defaults to `/{package_name}`)
+langchain app add rag_on_prem --api_path=/my/custom/path/rag
 ```
 
 Note: you remove packages by their api path
 
 ```bash
 langchain app remove my/custom/path/rag
+```
+
+## Run vLLM server with Docker
+```bash
+docker run --runtime nvidia --gpus all -d --rm  -v "{$YOUR_DIRECTORY}/.cache/huggingface:/root/.cache/huggingface" -p 8000:8000 --ipc=host --env "HUGGING_FACE_HUB_TOKEN={$HF_KEY}" vllm/vllm-openai:latest --model deepseek-ai/deepseek-llm-7b-chat  --max_model_len 640
 ```
 
 ## Setup LangSmith (Optional)
@@ -68,12 +70,8 @@ note it for use in the next step.
 To run the image, you'll need to include any environment variables
 necessary for your application.
 
-In the below example, we inject the `OPENAI_API_KEY` environment
-variable with the value set in my local environment
-(`$OPENAI_API_KEY`)
-
 We also expose port 8080 with the `-p 8080:8080` option.
 
 ```shell
-docker run -e OPENAI_API_KEY=$OPENAI_API_KEY -p 8080:8080 my-langserve-app
+docker run -d -e export LANGCHAIN_TRACING_V2="true" -e LANGCHAIN_API_KEY=$LANGCHAIN_API_KEY -e LANGCHAIN_PROJECT=$LANGCHAIN_PROJECT -p 8080:8080 my-langserve-app
 ```
